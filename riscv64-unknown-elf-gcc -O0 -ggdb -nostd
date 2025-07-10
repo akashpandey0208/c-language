@@ -1,1 +1,6 @@
-riscv64-unknown-elf-gcc -O0 -ggdb -nostdlib -march=rv32i -mabi=ilp32 -Wl,-Tm.ld m.s
+riscv64-unknown-elf-gcc -O0 -g -ggdb -nostdlib -march=rv32i -mabi=ilp32 -Wl,-Tm.ld m.s -o m.elf
+
+qemu-system-riscv32 -S -M virt -nographic -bios none -kernel m.elf -gdb tcp::1234
+
+gdb-multiarch m.elf -ex "target remote localhost:1234" -ex "break _start" -ex "continue" -q
+riscv64-unknown-elf-objcopy -O binary m.elf m.bin
